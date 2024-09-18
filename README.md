@@ -1,82 +1,158 @@
-# Microapp
+### Tópico 1
+Para a criação do workspace é necessário ter o NX instalado na sua máquina e ter o Expo CLI, pois isso irá facilitar o processo.
 
-<a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
-
-✨ Your new, shiny [Nx workspace](https://nx.dev) is almost ready ✨.
-
-[Learn more about this workspace setup and its capabilities](https://nx.dev/nx-api/expo?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
-
-## Finish your remote caching setup
-
-[Click here to finish setting up your workspace!](https://cloud.nx.app/connect/S9YyVwLFmS)
-
-
-## Run tasks
-
-To run the dev server for your app, use:
-
-```sh
-npx nx serve sofisapro
+O primeiro passo é instalar o NX e o Expo CLI usando o comando:
+```bash
+pnpm install -g nx expo-cli
 ```
 
-To create a production bundle:
-
-```sh
-npx nx build sofisapro
+Após a instalação navegue pelo terminal até a pasta onde você tem os seus projetos e rode o comando que irá criar o workspace e já irá criar o seu primeiro aplicativo:
+```bash
+pnpm create nx-workspace@latest --preset=expo --appName=seu-nome-do-app
 ```
 
-To see all available targets to run for a project, run:
+Durante a execução do programa, você deverá informar o nome do workspace, esse nome será usado como nome da pasta do projeto.
+No final você terá a sua estrutura inicial criada e já poderá executar o projeto.
 
-```sh
-npx nx show project sofisapro
-```
-        
-These targets are either [inferred automatically](https://nx.dev/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
-
-[More about running tasks in the docs &raquo;](https://nx.dev/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Add new projects
-
-While you could add new projects to your workspace manually, you might want to leverage [Nx plugins](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) and their [code generation](https://nx.dev/features/generate-code?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) feature.
-
-Use the plugin's generator to create new projects.
-
-To generate a new application, use:
-
-```sh
-npx nx g @nx/expo:app demo
+### Tópico 2
+Após a criação do projeto e do workspace, você poderá executar o seu aplicativo com o seguinte comando:
+```bash
+pnpm nx start seu-nome-do-app
 ```
 
-To generate a new library, use:
-
-```sh
-npx nx g @nx/react:lib mylib
+Para executar múltiplos aplicativos o melhor é, dentro do package.json, criar um script para encapsular a execução deles e mapear diferentes portas, caso necessário.
+Exemplo:
+```JSON
+"scripts": {
+    "start:all": "nx serve app1 --port=8080 & nx serve app2 --port=8081"
+  }
 ```
 
-You can use `npx nx list` to get a list of installed plugins. Then, run `npx nx list <plugin-name>` to learn about more specific capabilities of a particular plugin. Alternatively, [install Nx Console](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) to browse plugins and generators in your IDE.
+No exemplo acima, você só precisará rodar um único comando para executar as duas aplicações de uma só vez.
+### Tópico 3
+A melhor maneira, e a recomendada, para se criar um novo aplicativo dentro do seu workspace é por meio do seguinte comando:
+```bash
+pnpm nx g @nx/expo:app novo-app
+```
 
-[Learn more about Nx plugins &raquo;](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) | [Browse the plugin registry &raquo;](https://nx.dev/plugin-registry?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+Lembrando que esse comando deve ser executado dentro da pasta do workspace.
+
+Durante a execução do comando, será perguntado se você deseja que o novo aplicativo seja inserido dentro da pasta "apps", pasta padrão do NX onde os aplicativos estarão.
+### Tópico 4
+Para a inclusão de dependências externas, ou bibliotecas, ao nível de workspace, você deve estar na raiz do seu workspace e executar o comando:
+```bash
+pnpm add nome-do-pacote
+```
+
+Isso irá instalar o pacote no workspace e ele ficará disponível para todos os aplicativos.
+
+Para utilizá-lo, basta importar nos arquivos em que você deseja usar, sem nenhuma configuração adicional.
+### Tópico 5
+Digamos que você deseje criar um “lib”, interna, para fazer isso você precisará rodar um comando do NX que irá criar e configurar o seu workspace para utilizá-la.
+
+```bash
+npx nx g @nx/expo:lib nome-da-lib --directory=pasta/desejada
+```
+
+Isso criará uma “lib” que poderá ser utilizada em todos os aplicativos do seu workspace.
+
+Você também pode incluir componentes dentro da sua lib, que são partes de interface que podem ser reutilizadas. A principal diferença entre _components_ e _libs_ em um workspace Nx é a seguinte:
+- **Componentes**: São partes reutilizáveis da interface do usuário que podem ser geradas em uma biblioteca. Eles são focados em apresentar dados e interagir com o usuário. Para gerar um novo componente em uma biblioteca, você pode usar o seguinte comando:
+	```bash
+	npx nx g @nx/expo:component your-component-name --project=your-lib-name --export
+	```
+
+- **Libs**: Representam bibliotecas que contêm serviços, componentes, utilitários, etc. Elas têm uma API pública bem definida, representada por um arquivo `index.ts`. Isso força os desenvolvedores a pensar sobre o que deve ser exposto e o que deve permanecer privado dentro da biblioteca. As libs são uma forma de organizar o código de maneira modular e coesa, permitindo uma separação clara de preocupações.
+
+Em resumo, enquanto os componentes são elementos individuais da interface do usuário, as libs são coleções de componentes e lógica que podem ser reutilizadas em diferentes aplicativos dentro do workspace.
 
 
-[Learn more about Nx on CI](https://nx.dev/ci/intro/ci-with-nx#ready-get-started-with-your-provider?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+## Configuração do Storybook
+### Passo a passo
+1. Passo é instalar o plugin do storybook para o Nx:
+```bash
+nx add @nx/storybook
+```
 
-## Install Nx Console
+2. Agora é necessário startar a configuração do storybook dentro do Nx com o comando abaixo:
+```bash
+nx g @nx/storybook:init
+```
 
-Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
+3. O próximo passo é a criação dos arquivos de configuração para o projeto específico, nesta etapa você será questionado sobre qual framework quer usar, escolha @storybook/react-webpack5 para funcionar com nossa aplicação expo:
+```bash
+nx g @nx/storybook:configuration <nome_do_app>
+```
 
-[Install Nx Console &raquo;](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+4. Após o último comando, seu aplicativo deve ter uma pasta .storybook com alguns arquivos de configuração. Se ela existir, você já pode criar uma story dentro do aplicativo que você configurou, como o exemplo abaixo:
+```typescript
+import Login from './index';
 
-## Useful links
+export default {
+  title: 'Login',
+  component: Login,
 
-Learn more:
+  argTypes: {
+  },
+};
 
-- [Learn more about this workspace setup](https://nx.dev/nx-api/expo?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects)
-- [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+export const Default = () => <Login />
+```
 
-And join the Nx community:
-- [Discord](https://go.nx.dev/community)
-- [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
-- [Our Youtube channel](https://www.youtube.com/@nxdevtools)
-- [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+5. Com tudo pronto, basta rodar o comando abaixo para executar o storybook:
+```bash
+nx run <nome_do_app>:storybook
+```
+
+Esses 5 passos configuram o storybook para um aplicativo dentro do Nx workspace.
+
+### Como importar as stories dos outros aplicativos para dentro do sofisapro
+
+O primeiro passo é realizar a configuração do storybook para o aplicativo sofisapro com o comando listado no passo 3.
+Isso irá criar a pasta .storybook e configurará o projeto para executar o storybook.
+Então você deve acessar o arquivo main.ts dentro da pasta .storybook do sofisapro e dentro do array de stories, você deve incluir uma nova string que irá referenciar todas as stories dentro dos outros apps:
+```typescript
+import type { StorybookConfig } from '@storybook/react-webpack5';
+
+const config: StorybookConfig = {
+  stories: [
+    '../src/app/**/*.@(mdx|stories.@(js|jsx|ts|tsx))',
+    '../../login/src/app/**/*.@(mdx|stories.@(js|jsx|ts|tsx))',
+  ],
+  addons: [
+    '@storybook/addon-essentials',
+    '@storybook/addon-interactions',
+    '@nx/react/plugins/storybook',
+  ],
+  framework: {
+    name: '@storybook/react-webpack5',
+    options: {},
+  },
+  webpackFinal: async (config) => {
+    if (config.resolve) {
+      config.resolve.alias = {
+        ...config.resolve.alias,
+        'react-native$': 'react-native-web',
+      };
+      config.resolve.extensions = [
+        '.web.tsx',
+        '.web.ts',
+        '.web.jsx',
+        '.web.js',
+        ...(config.resolve.extensions ?? []),
+      ];
+    }
+    return config;
+  },
+};
+
+export default config;
+```
+
+No exemplo acima, a linha incluída foi a de número 6
+```typescript
+	 '../../login/src/app/**/*.@(mdx|stories.@(js|jsx|ts|tsx))',
+```
+
+Fazendo isso, ao executar o comando nx run sofisapro:storybook você verá todas as stories do sofisapro e do aplicativo que você referenciou no passo anterior.
+
